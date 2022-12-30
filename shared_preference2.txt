@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  TextEditingController txt1 = TextEditingController();
+
+  String mytext = "";
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          title: Text("MyApp"),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              Text(
+                ": Shared Preference Demo :",
+                style: TextStyle(
+                    backgroundColor: Color.fromARGB(255, 248, 237, 203),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 150,
+              ),
+              Container(
+                margin: EdgeInsets.all(20),
+                padding: EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                    borderRadius: BorderRadius.circular(10)),
+                child: TextField(
+                  controller: txt1,
+                ),
+              ),
+              ElevatedButton(
+                  style:
+                      TextButton.styleFrom(backgroundColor: Colors.deepPurple),
+                  onPressed: () {
+                    _SaveData();
+                  },
+                  child: Text("Save")),
+              SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  style:
+                      TextButton.styleFrom(backgroundColor: Colors.deepPurple),
+                  onPressed: () {
+                    _GetData();
+                  },
+                  child: Text("Get")),
+              SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                  style:
+                      TextButton.styleFrom(backgroundColor: Colors.deepPurple),
+                  onPressed: () {
+                    _RemoveData();
+                  },
+                  child: Text("Remove")),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                mytext,
+                style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _SaveData() async {
+    var prefs = await SharedPreferences.getInstance();
+    var ll = int.parse(txt1.text);
+    await prefs.setInt('ll', ll);
+
+    setState(() {
+      mytext = "Saved";
+    });
+  }
+
+  void _GetData() async {
+    var prefs = await SharedPreferences.getInstance();
+    final int? ll = prefs.getInt('ll');
+    setState(() {
+      Text(mytext = "Get Data : $ll");
+    });
+  }
+
+  void _RemoveData() async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.remove("ll");
+    setState(() {
+      mytext = "Removed";
+    });
+  }
+}
